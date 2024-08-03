@@ -3,83 +3,6 @@
 <head>
     <title>IV Year Topics</title>
     <style>
-
-    
-    /* styles.css */
-
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    flex-direction: column;
-}
-
-h1 {
-    font-size: 28px;
-    color: #333333;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-form {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: left;
-}
-
-label {
-    font-size: 16px;
-    color: #333333;
-    display: block;
-    margin-bottom: 5px;
-}
-
-select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-button {
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-a {
-    display: inline-block;
-    margin-top: 20px;
-    text-decoration: none;
-    color: #007bff;
-    font-size: 16px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-
     /* styles.css */
     body {
         font-family: 'Arial', sans-serif;
@@ -137,7 +60,12 @@ a:hover {
         width: 100%;
     }
 
-    button:hover {
+    button:disabled {
+        background-color: #c0c0c0;
+        cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
         background-color: #0056b3;
     }
 
@@ -153,12 +81,36 @@ a:hover {
         text-decoration: underline;
     }
 
+    /* Dark mode styles */
+    .dark-mode {
+        background-color: #333333;
+        color: #ffffff;
+    }
+
+    .dark-mode form {
+        background-color: #444444;
+    }
+
+    .dark-mode select, .dark-mode input {
+        background-color: #555555;
+        color: #ffffff;
+        border: 1px solid #666666;
+    }
+
+    .dark-mode button {
+        background-color: #0056b3;
+    }
+
+    .dark-mode button:disabled {
+        background-color: #555555;
+    }
     </style>
 </head>
 <body>
     <h1>Topics for {{ year }}</h1>
     
-    <form action="{{ url_for('form_submission') }}" method="post">
+    <form action="{{ url_for('submit_topic_selection') }}" method="post">
+
         <label for="forenoon_topic">Forenoon Topic:</label>
         <select name="forenoon_topic" id="forenoon_topic" required>
             {% for topic in forenoon_topics %}
@@ -166,12 +118,12 @@ a:hover {
             {% endfor %}
         </select>
         <br><br>
-        <label for="afternoon_topic">Afternoon Topic:</label>
-        <select name="afternoon_topic" id="afternoon_topic" required>
-        {% for topic in afternoon_topics %}
-        <option value="{{ topic.id }}">{{ topic.topic }}</option>
-    {% endfor %}
-</select>
+        <label for="afternoon_topic">Afternoon Topics:</label>
+        <select id="afternoon_topic" name="afternoon_topic" onchange="checkDepartment()" required>
+            {% for topic in afternoon_topics %}
+                <option value="{{ topic.id }}" data-department="{{ topic.department_id }}">{{ topic.topic }}</option>
+            {% endfor %}
+        </select>
 
         <br><br>
         
@@ -194,8 +146,36 @@ a:hover {
         <label for="total_experience">Total Experience (In Years):</label>
         <input type="number" id="total_experience" name="total_experience" step="0.1" required><br><br>
 
-        <button type="submit">Submit</button>
+        <button type="submit" id="submit_button">Submit</button>
     </form>
     <a href="{{ url_for('index') }}">Back</a>
+
+    <button id="dark_mode_toggle">Toggle Dark Mode</button>
+
+    <script>
+        function checkDepartment() {
+            var restrictedDepartments = ['IT', 'AI&DS'];
+            var selectElement = document.getElementById('afternoon_topic');
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var departmentName = selectedOption.getAttribute('data-department'); // Use data attribute for department ID
+            var submitButton = document.getElementById('submit_button');
+
+            // If the department name is restricted, alert the user and disable the submit button
+            if (restrictedDepartments.includes(departmentName)) {
+                alert('Please choose a different department for IV year.');
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        }
+
+        // Initial state of the submit button
+        checkDepartment();
+
+        // Toggle dark mode
+        document.getElementById('dark_mode_toggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
 </body>
 </html>

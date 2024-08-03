@@ -30,5 +30,20 @@ CREATE TABLE IF NOT EXISTS faculty_details (
 )
 ''')
 
+# Create IV_year_data table
+conn.execute('''
+CREATE TABLE IF NOT EXISTS iv_year_data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    forenoon_topic TEXT NOT NULL,
+    afternoon_topic TEXT NOT NULL,
+    email TEXT NOT NULL,
+    name TEXT NOT NULL,
+    designation TEXT NOT NULL,
+    qualification TEXT NOT NULL,
+    experience_nscet INTEGER NOT NULL,
+    total_experience INTEGER NOT NULL
+)
+''')
+
 conn.commit()
 conn.close()

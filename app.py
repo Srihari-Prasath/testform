@@ -83,8 +83,8 @@ def form(topic_id):
     conn.close()
     return render_template('form.html', topic=topic)
 
-@app.route('/form_submission', methods=['POST'])
-def form_submission():
+@app.route('/submit_topic_selection', methods=['POST'])
+def submit_topic_selection():
     forenoon_topic_id = request.form.get('forenoon_topic')
     afternoon_topic_id = request.form.get('afternoon_topic')
     
@@ -98,13 +98,42 @@ def form_submission():
     
     return redirect(url_for('success_page'))
 
+@app.route('/submit_faculty_details', methods=['POST'])
+def submit_faculty_details():
+    email = request.form.get('email')
+    name = request.form.get('name')
+    designation = request.form.get('designation')
+    qualification = request.form.get('qualification')
+    experience_nscet = request.form.get('experience_nscet')
+    total_experience = request.form.get('total_experience')
+    year = request.form.get('year')
+    department = request.form.get('department')
+    topic = request.form.get('forenoon_topic')  # Assuming you're using forenoon_topic
+
+    conn = get_db_connection()
+    
+    conn.execute('''
+    INSERT INTO faculty_details (email, name, designation, qualification, experience_nscet, total_experience, year, department, topic)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (email, name, designation, qualification, experience_nscet, total_experience, year, department, topic))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('success_page'))
+
 @app.route('/success')
 def success_page():
     return render_template('success.html')
 
 def export_to_excel(year):
     conn = get_db_connection()
-    df = pd.read_sql_query('SELECT * FROM faculty_details WHERE year = ?', conn, params=(year,))
+    
+    if year == 'IV year':
+        df = pd.read_sql_query('SELECT * FROM iv_year_data', conn)
+    else:
+        df = pd.read_sql_query('SELECT * FROM faculty_details WHERE year = ?', conn, params=(year,))
+    
     conn.close()
     
     # Create an in-memory output file for the new workbook
@@ -118,6 +147,25 @@ def export_to_excel(year):
     
     return output
 
+@app.route('/export_excel')
+def export_excel():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Adjust query if necessary
+    cursor.execute('SELECT * FROM faculty_details')
+    rows = cursor.fetchall()
+
+    conn.close()
+    
+    # Use pandas to export to Excel
+    df = pd.DataFrame(rows, columns=['id', 'email', 'name', 'designation', 'qualification', 'experience_nscet', 'total_experience', 'year', 'department', 'topic'])
+    output = io.BytesIO()
+    df.to_excel(output, index=False, engine='xlsxwriter')
+    output.seek(0)
+    
+    return send_file(output, attachment_filename='faculty_details.xlsx', as_attachment=True)
+
 @app.route('/download/<year>', methods=['GET'])
 def download(year):
     output = export_to_excel(year)
@@ -129,8 +177,8 @@ def iv_year():
     department = request.form.get('department')
     
     conn = get_db_connection()
-    
-    # Fetch topics for IV year
+
+    # Fetch topics excluding IT and AI&DS departments
     forenoon_topics = conn.execute('''
         SELECT * FROM topics
         WHERE year = ?
@@ -149,17 +197,14 @@ def iv_year():
                OR department_id = (SELECT id FROM departments WHERE name = ?))
     ''', (year, department)).fetchall()
     
-    # Fetch departments
+    # Fetch departments excluding IT and AI&DS
     departments = conn.execute('''
         SELECT * FROM departments
+        WHERE name != 'IT' AND name != 'AI&DS'
     ''').fetchall()
 
     conn.close()
     
-    # Exclude IT and AI&DS from the departments list for IV year
-    if year == 'IV year':
-        departments = [dept for dept in departments if dept['name'] not in ('IT', 'AI&DS')]
-
     return render_template('iv_year.html', year=year, forenoon_topics=forenoon_topics, afternoon_topics=afternoon_topics, departments=departments)
 
 @app.route('/reset', methods=['POST'])

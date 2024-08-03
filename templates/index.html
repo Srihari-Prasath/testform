@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Topic Selection</title>
+    <script>
+        function validateForm() {
+            const year = document.getElementById('year').value;
+            const department = document.getElementById('department').value;
+
+            if (year === "Select" || department === "Select") {
+                alert("Please select both Year and Department.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>Select Year and Department</h1>
+    <form action="{{ url_for('topics') }}" method="post" onsubmit="return validateForm()">
+        <label for="year">Year:</label>
+        <select name="year" id="year" required>
+            <option disabled selected>Select</option>
+            <option value="II year">II year</option>
+            <option value="III year">III year</option>
+            <option value="IV year">IV year</option>
+        </select>
+        <br><br>
+        <label for="department">Department:</label>
+        <select name="department" id="department" required>
+            <option disabled selected>Select</option>
+            <option value="CSE">CSE</option>
+            <option value="IT">IT</option>
+            <option value="AI&DS">AI&DS</option>
+            <option value="ECE">ECE</option>
+            <option value="EEE">EEE</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+        </select>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+    <br><br>
+    <form action="{{ url_for('reset') }}" method="post">
+        <button type="submit">Reset Selected Topics</button>
+    </form>
+</body>
+</html>

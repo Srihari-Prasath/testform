@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IV Year Topics</title>
+</head>
+<body>
+    <h1>Topics for {{ year }}</h1>
+    <form action="{{ url_for('form') }}" method="post">
+        <label for="forenoon_topic">Forenoon Topic:</label>
+        <select name="forenoon_topic" id="forenoon_topic" required>
+            {% for topic in forenoon_topics %}
+                <option value="{{ topic.id }}">{{ topic.topic }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="afternoon_topic">Afternoon Topic:</label>
+        <select name="afternoon_topic" id="afternoon_topic" required>
+            {% for topic in afternoon_topics %}
+                <option value="{{ topic.id }}">{{ topic.topic }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+    <a href="{{ url_for('index') }}">Back</a>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Topics</title>
+</head>
+<body>
+    <h1>Topics for {{ year }}</h1>
+    <ul>
+        {% for topic in topics %}
+            <li><a href="{{ url_for('form', topic_id=topic.id) }}">{{ topic.topic }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

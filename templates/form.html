@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Topic Form</title>
+</head>
+<body>
+    <h1>{{ topic.topic }}</h1>
+    <form action="{{ url_for('form', topic_id=topic.id) }}" method="post">
+        <!-- Add form fields as needed -->
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

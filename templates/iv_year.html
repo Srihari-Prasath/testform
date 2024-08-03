@@ -3,6 +3,7 @@
 <head>
     <title>IV Year Topics</title>
     <style>
+
     
     /* styles.css */
 
@@ -78,11 +79,86 @@ a:hover {
     text-decoration: underline;
 }
 
+
+    /* styles.css */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+
+    h1 {
+        font-size: 28px;
+        color: #333333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    form {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: left;
+    }
+
+    label {
+        font-size: 16px;
+        color: #333333;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    select, input[type="text"], input[type="email"], input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #007bff;
+        font-size: 16px;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
     </style>
 </head>
 <body>
     <h1>Topics for {{ year }}</h1>
-    <form action="{{ url_for('form') }}" method="post">
+    
+    <form action="{{ url_for('form_submission') }}" method="post">
         <label for="forenoon_topic">Forenoon Topic:</label>
         <select name="forenoon_topic" id="forenoon_topic" required>
             {% for topic in forenoon_topics %}
@@ -92,11 +168,32 @@ a:hover {
         <br><br>
         <label for="afternoon_topic">Afternoon Topic:</label>
         <select name="afternoon_topic" id="afternoon_topic" required>
-            {% for topic in afternoon_topics %}
-                <option value="{{ topic.id }}">{{ topic.topic }}</option>
-            {% endfor %}
-        </select>
+        {% for topic in afternoon_topics %}
+        <option value="{{ topic.id }}">{{ topic.topic }}</option>
+    {% endfor %}
+</select>
+
         <br><br>
+        
+        <!-- Additional Inputs -->
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="designation">Designation:</label>
+        <input type="text" id="designation" name="designation" required><br><br>
+
+        <label for="qualification">Qualification:</label>
+        <input type="text" id="qualification" name="qualification" required><br><br>
+
+        <label for="experience_nscet">Experience in NSCET (In Years):</label>
+        <input type="number" id="experience_nscet" name="experience_nscet" step="0.1" required><br><br>
+
+        <label for="total_experience">Total Experience (In Years):</label>
+        <input type="number" id="total_experience" name="total_experience" step="0.1" required><br><br>
+
         <button type="submit">Submit</button>
     </form>
     <a href="{{ url_for('index') }}">Back</a>

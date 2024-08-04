@@ -4,7 +4,6 @@ def insert_topics():
     conn = sqlite3.connect('data.db')
     cursor = conn.cursor()
     
-    # Define topics for each year and department
     topics = [
         # II Year
         ('II year', None, 'Numbers and Percentage', None, 0),

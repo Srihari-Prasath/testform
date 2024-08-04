@@ -63,6 +63,10 @@ a:active {
         {% for topic in topics %}
             <li><a href="{{ url_for('form', topic_id=topic.id) }}">{{ topic.topic }}</a></li>
         {% endfor %}
+        <!--{% for topic in topics %}
+    <p>{{ topic['topic'] }}</p>
+{% endfor %}
+-->
     </ul>
 </body>
 </html>

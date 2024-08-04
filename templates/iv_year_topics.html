@@ -11,8 +11,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+         
             flex-direction: column;
+
         }
 
         h1 {
@@ -54,8 +55,11 @@
     </style>
 </head>
 <body>
-    <h1>IV Year Topics</h1>
+    <div class="header">
+        <h1>IV Year Topics</h1>
+   
     <h2>Forenoon Topics</h2>
+    </div>
     <ul>
         {% for topic in forenoon_topics %}
             <li><a href="{{ url_for('form', topic_id=topic.id, year='IV year') }}">{{ topic.topic }}</a></li>

@@ -92,15 +92,12 @@ def form(topic_id):
         flash('Failed to connect to the database.')
         return redirect(url_for('index'))
 
+    # Fetch the topic details
     topic = conn.execute('SELECT * FROM topics WHERE id = ?', (topic_id,)).fetchone()
     if topic is None:
         conn.close()
         return "Topic not found", 404
     
-    if topic['selected']:
-        conn.close()
-        return redirect(url_for('success_page'))
-
     if request.method == 'POST':
         email = request.form['email']
         name = request.form['name']
@@ -116,16 +113,16 @@ def form(topic_id):
             conn.close()
             return redirect(url_for('form', topic_id=topic_id))
         
-        # Mark the topic as selected
-        conn.execute('UPDATE topics SET selected = 1 WHERE id = ?', (topic_id,))
-        conn.commit()
-        
         # Save the data to the database
         conn.execute('INSERT INTO faculty_details (email, name, designation, qualification, experience_nscet, total_experience, year, department, topic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
                      (email, name, designation, qualification, experience_nscet, total_experience, topic['year'], topic['department_id'], topic['topic']))
         conn.commit()
-        conn.close()
         
+        # Optionally: If you don't want to mark the topic as selected
+        # conn.execute('UPDATE topics SET selected = 1 WHERE id = ?', (topic_id,))
+        # conn.commit()
+
+        conn.close()
         return redirect(url_for('success_page'))
 
     conn.close()
